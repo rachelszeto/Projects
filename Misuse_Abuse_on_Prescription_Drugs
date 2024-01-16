@@ -45,3 +45,106 @@ pain_reliever$Employment_Status <- factor(pain_reliever$Employment_Status, level
 pain_reliever$City_Metro_Size <- factor(pain_reliever$City_Metro_Size, levels = c(1,2,3), labels = c("rural","small","large"))
 
 #write.csv(pain_reliever, "cleaned_data.csv", row.names=TRUE)
+
+### My code in R
+pain_reliever <- read_csv("~/Documents/R Projects/prlmis-data-full.csv")
+# pain_reliever <- read.csv ("prlmis_data_full.csv")
+str (pain_reliever)
+head (pain_reliever)
+
+pain_reliever$Age <- pain_reliever$AGECAT
+pain_reliever$AGECAT <- NULL
+
+pain_reliever$Education <- pain_reliever$EDUCAT
+pain_reliever$EDUCAT <- NULL
+
+pain_reliever$Employment <- pain_reliever$EMPLOY18
+pain_reliever$EMPLOY18 <- NULL
+
+pain_reliever$City_Metro <- pain_reliever$CTYMETRO
+pain_reliever$CTYMETRO <- NULL
+
+pain_reliever$Mental_Health <- pain_reliever$MENTHLTH
+pain_reliever$MENTHLTH <- NULL
+
+pain_reliever$Misused_medication <- pain_reliever$PRLMISEVR
+pain_reliever$PRLMISEVR <- NULL
+
+pain_reliever$Abused_medication <- pain_reliever$PRLMISAB
+pain_reliever$PRLMISAB <- NULL
+
+pain_reliever$Misused_abused_medication <- pain_reliever$PRLANY
+pain_reliever$PRLANY <- NULL
+
+pain_reliever$Tranquilizers <- pain_reliever$TRQLZRS
+pain_reliever$TRQLZRS <- NULL
+
+pain_reliever$Sedatives <- pain_reliever$SEDATVS
+pain_reliever$SEDATVS <- NULL
+
+pain_reliever$Amphetamines <- pain_reliever$AMPHETMN
+pain_reliever$AMPHETMN <- NULL
+
+pain_reliever$Hallucinogens <- pain_reliever$HALUCNG
+pain_reliever$HALUCNG <- NULL
+
+pain_reliever$Treatment <- pain_reliever$TRTMENT
+pain_reliever$TRTMENT <- NULL
+
+# making a graph for mental health vs. ever misused or abused
+# prescription medication in the past year
+
+ggplot (df, aes(x=BNucl, color=factor.class)) + 
+  geom_histogram(position="dodge", binwidth=1, aes(y=..density..))
+
+ggplot (df, aes(x=BNucl, color=factor.class)) + 
+geom_histogram (Mental_Health ~ Misused_abused_medication, data = pain_reliever,
+           col = "pink", xlab = "Misused or Abused Prescription Medication", 
+           ylab = "Mental Health", main = "Misused or Abused Prescription Medication
+           vs. Mental Health", breaks = 20, width = .2)
+
+histogram (Mental_Health ~ Misused_abused_medication, data = pain_reliever,
+      col = "pink", xlab = "Misused or Abused Prescription Medication", 
+      ylab = "Mental Health", main = "Misused or Abused Prescription Medication
+      vs. Mental Health", breaks = 20)
+
+histogram (Misused_abused_medication ~ Mental_Health, data = pain_reliever,
+           col= "pink", ylab = "Misused or Abused Prescription Medication", 
+           xlab = "Mental Health", main = "Mental Health vs.
+           Misused or Abused Prescription Medication", breaks = 40, width = .2)
+
+ggplot(data = pain_reliever, aes(x = Misused_abused_medication, y = Mental_Health, color = factor(class))) + 
+  geom_point() +
+  labs(
+    x = "Misused or Abused Prescription Medication",
+    y = "Mental Health",
+    title = "Misused or Abused Prescription Medication vs. Mental Health"
+  )
+
+### Jitter scatter
+df <- data.frame(
+  ID = 1:10,
+  Misused_abused_medication = c("1", "2", "3", "4", "5","6", "7", "8", "9", "10")
+)
+df$Misused_abused_medication <- as.factor(df$Misused_abused_medication)
+levels(df$Category)
+
+###
+data <- data.frame(
+  ID = 1:5,
+  AgeRange = c("18-25", "26-35", "36-45", "46-55", "56+")
+)
+
+# Assigning Likert scale values to age ranges
+likert_values <- c("18-25" = 1, "26-35" = 2, "36-45" = 3, "46-55" = 4, "56+" = 5)
+
+# Converting age range to Likert scale using values from likert_values
+data$Age <- likert_values[data$AgeRange]
+
+# View the modified data frame
+print(data)
+
+plot (Age ~ Misused_abused_medication, data = pain_reliever) +
+  gf_jitter(Age ~ Misused_abused_medication, data=pain_reliever) %>%
+  gf_lm()
+

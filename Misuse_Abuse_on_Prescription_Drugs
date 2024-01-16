@@ -19,7 +19,6 @@ names(pain_reliever)[names(pain_reliever) == "MENTHLTH"] <- "Mental_Health"
 
 names(pain_reliever)[names(pain_reliever) == "PRLMISEVR"] <- "PR_Misuse_or_Abuse"
 
-#I would not recommend using columns below because the paper omitted them
 names(pain_reliever)[names(pain_reliever) == "PRLMISAB"] <- "PR_Misuse_or_Abuse2"
 names(pain_reliever)[names(pain_reliever) == "PRLANY"] <- "PR_Misuse_or_Abuse3"
 
@@ -148,3 +147,25 @@ plot (Age ~ Misused_abused_medication, data = pain_reliever) +
   gf_jitter(Age ~ Misused_abused_medication, data=pain_reliever) %>%
   gf_lm()
 
+### Creating a bar chart with Python
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+
+df = pd.read_csv('cleaned_data.csv')
+df_cleaned = df.dropna(subset=['Marital_Status'])
+df_cleaned = df_cleaned.dropna(subset=['Education'])
+df_cleaned = df_cleaned.dropna(subset=['City_Metro_Size'])
+
+sns.histplot(
+    x='City_Metro_Size',
+    hue = 'PR_Misuse_or_Abuse2',
+    data=df_cleaned,
+    multiple = 'stack',
+    stat = 'percent')
+# Set axis labels and title
+plt.xlabel('City Metro Size')
+plt.title('City Metro Size vs. Prescription Miused or Abused Drugs')
+# Display the plot
+plt.show()

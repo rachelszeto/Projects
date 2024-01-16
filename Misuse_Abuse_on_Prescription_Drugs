@@ -1,0 +1,47 @@
+library("readr")
+
+pain_reliever <- read_csv("prlmis-data-full.csv")
+
+str(pain_reliever)
+head(pain_reliever)
+
+# renaming columns for readability
+
+names(pain_reliever)[names(pain_reliever) == "YEAR"] <- "Survey_Year"
+names(pain_reliever)[names(pain_reliever) == "AGECAT"] <- "Age_Category"
+names(pain_reliever)[names(pain_reliever) == "SEX"] <- "Sex"
+names(pain_reliever)[names(pain_reliever) == "MARRIED"] <- "Marital_Status"
+names(pain_reliever)[names(pain_reliever) == "EDUCAT"] <- "Education"
+names(pain_reliever)[names(pain_reliever) == "EMPLOY18"] <- "Employment_Status"
+names(pain_reliever)[names(pain_reliever) == "CTYMETRO"] <- "City_Metro_Size"
+names(pain_reliever)[names(pain_reliever) == "HEALTH"] <- "Health_Problems"
+names(pain_reliever)[names(pain_reliever) == "MENTHLTH"] <- "Mental_Health"
+
+names(pain_reliever)[names(pain_reliever) == "PRLMISEVR"] <- "PR_Misuse_or_Abuse"
+
+#I would not recommend using columns below because the paper omitted them
+names(pain_reliever)[names(pain_reliever) == "PRLMISAB"] <- "PR_Misuse_or_Abuse2"
+names(pain_reliever)[names(pain_reliever) == "PRLANY"] <- "PR_Misuse_or_Abuse3"
+
+names(pain_reliever)[names(pain_reliever) == "HEROINEVR"] <- "Ever_Used_Heroin"
+
+#all below are use in past year*remember for presentation
+names(pain_reliever)[names(pain_reliever) == "HEROINUSE"] <- "Heroin"
+names(pain_reliever)[names(pain_reliever) == "TRQLZRS"] <- "Tranquilizers"
+names(pain_reliever)[names(pain_reliever) == "SEDATVS"] <- "Sedatives"
+names(pain_reliever)[names(pain_reliever) == "COCAINE"] <- "Cocaine"
+names(pain_reliever)[names(pain_reliever) == "AMPHETMN"] <- "Amphetamines"
+names(pain_reliever)[names(pain_reliever) == "HALUCNG"] <- "Hallucinogens"
+names(pain_reliever)[names(pain_reliever) == "TRTMENT"] <- "Substance_Use_Treatment"
+names(pain_reliever)[names(pain_reliever) == "MHTRTMT"] <- "Mental_Health_Treatment"
+
+# transforming encoded data/labels back to original values
+pain_reliever$Survey_Year <- factor(pain_reliever$Survey_Year, levels = c(15,16,17), labels = c("2015","2016","2017"))
+pain_reliever$Age_Category <- factor(pain_reliever$Age_Category, levels = c(1,2,3,4,5), labels = c("12-17","18-25","26-35","36-49","50+"))
+pain_reliever$Sex <- factor(pain_reliever$Sex, levels = c(0,1), labels = c("male","female"))
+pain_reliever$Marital_Status <- factor(pain_reliever$Marital_Status, levels = c(0,1,2,3), labels = c("unmarried","divorced","widowed","married"))
+pain_reliever$Education <- factor(pain_reliever$Education, levels = c(1,2,3,4), labels = c("h.s. or less","h.s. grad", "some college", "college grad"))
+pain_reliever$Employment_Status <- factor(pain_reliever$Employment_Status, levels = c(0,1,2), labels = c("not employed","part-time","full-time"))
+pain_reliever$City_Metro_Size <- factor(pain_reliever$City_Metro_Size, levels = c(1,2,3), labels = c("rural","small","large"))
+
+#write.csv(pain_reliever, "cleaned_data.csv", row.names=TRUE)

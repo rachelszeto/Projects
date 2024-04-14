@@ -1,0 +1,33 @@
+library(tidyverse)
+
+flight <- read.csv("~/Documents/R Projects/archive/flights_sample_3m.csv")
+
+head (flight)
+
+flight_clean <- flight[complete.cases(flight$DELAY_DUE_CARRIER, flight$DELAY_DUE_WEATHER,
+                                      flight$DELAY_DUE_NAS, flight$DELAY_DUE_SECURITY, 
+                                      flight$DELAY_DUE_LATE_AIRCRAFT),]
+flight_clean
+
+na_count <- colSums(is.na(flight))
+print(na_count)
+
+total_na_count <- sum(na_count)
+print(total_na_count)
+
+flight_clean <- subset(flight_clean, select = -CANCELLATION_CODE)
+flight_clean <- subset(flight_clean, select = -DOT_CODE)
+
+view (flight_clean)
+
+greater_than_0 <- flight_clean$DIVERTED > 0.0
+
+count <- table (greater_than_0)
+print (count)
+
+flight_clean <- subset(flight_clean, select = -DIVERTED)
+flight_clean <- subset(flight_clean, select = -AIRLINE)
+flight_clean <- subset(flight_clean, select = -AIRLINE_DOT)
+view(flight_clean)
+
+write.csv (flight_clean,"~/Documents/R Projects/flight_clean.csv", row.names = FALSE)

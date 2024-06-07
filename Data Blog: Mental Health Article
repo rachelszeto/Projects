@@ -1,0 +1,98 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy import stats
+import seaborn as sns
+import numpy as np
+
+file_path = '/Users/rachelszeto/Documents/Python/suicidedatarevised.csv'
+
+# Read the CSV files, specifying the correct separator
+df = pd.read_csv(file_path, skiprows=1, sep=',')
+
+# Displaying the data frame
+print(df)
+
+# Display the first few rows of the dataset
+print(df.head())
+
+# Check the data types and missing values
+print(df.info())
+
+# Summary statistics
+print(df.describe())
+
+# Creating scatter plot on Happiness vs. Suicide Rate 
+sns.regplot(x='Happiness Score', y='Suicide rate', data=df)
+plt.xlabel("Happiness Score")
+plt.ylabel("Suicide Rate (%)")
+plt.title("Happiness vs. Suicide Rate")
+plt.show()
+
+# Calculate Pearson correlation coefficient
+happiness_scores = df['Happiness Score']
+suicide_rates = df['Suicide rate']
+slope, intercept, r_value, p_value, std_err = stats.linregress(happiness_scores, suicide_rates)
+
+# Calculate R-squared
+r_squared = r_value**2
+
+print(f"R-squared: {r_squared}")
+
+# print(f"The Pearson correlation coefficient (r value) is: {correlation}")
+
+# Creating scatter plot on Suicide rate and GDP per capita
+df_filtered = df[(df['Suicide rate'] != 0) | (df['GDP per capita'] != 0)]  # removing outliers (0,0)
+plt.scatter(df_filtered['Suicide rate'], df_filtered['GDP per capita'], c='xkcd:aquamarine', alpha=0.5)
+plt.xlabel("Suicide Rate")
+plt.ylabel("GDP per Capita")
+plt.title("Suicide Rate vs. GDP per Capita")
+
+# creating line of best fit
+slope, intercept = np.polyfit(df_filtered['Suicide rate'], df_filtered['GDP per capita'], 1)
+# Generate x values (suicide rates)
+x = np.array(df_filtered['Suicide rate'])
+# Calculate y values (GDP per capita) using the line equation y = mx + c
+y = slope * x + intercept
+plt.plot(x, y, color='red', linestyle='--', linewidth=2, label=f'Best fit line: y={slope:.2f}x + {intercept:.2f}')
+plt.legend()
+plt.show()
+
+# sort data frame top 10
+df_sorted = df.sort_values(by='Suicide rate', ascending=False)
+
+# Select the top 10 rows
+top_10_suicide_rates = df_sorted.head(10)
+plt.figure(figsize=(12, 8))
+sns.barplot(x='Country', y='Suicide rate', data=top_10_suicide_rates, hue='Country', palette='dark:blue', legend=False)
+plt.xlabel("Country")
+plt.ylabel("Suicide Rates")
+plt.title('Top 10 Suicide Rates by Country')
+plt.xticks(rotation=35)
+ax = plt.gca()
+ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')  # Adjust rotation and horizontal alignment
+for tick in ax.get_xticklabels():
+    tick.set_x(tick.get_position()[0] - 0.2)  # Shift each label to the left by 0.2 units
+plt.show()
+
+# scatterplot on Life expectancy years - women vs. suicide rate
+plt.scatter(df['Life Expectancy (years) - Women'], df['Suicide rate'], c='xkcd:light pink')
+plt.xlabel("Life Expectancy (years) - Women")
+plt.ylabel("Suicide Rates")
+plt.title("Life Expectancy for Women vs. Suicide Rate")
+plt.show()
+
+# scatterplot on Life expectancy years - men vs. suicide rate
+plt.scatter(df['Life Expectancy (years) - Men'], df['Suicide rate'], c='xkcd:light sky blue')
+plt.xlabel("Life Expectancy (years) - Men")
+plt.ylabel("Suicide Rates")
+plt.title("Life Expectancy for Men vs. Suicide Rate")
+plt.show()
+
+# comparative histogram on life expectancy
+sns.histplot(df['Life Expectancy (years) - Women'], bins=20, alpha=0.5, kde=True, label='Women', color='blue')
+sns.histplot(df['Life Expectancy (years) - Men'], bins=20, alpha=0.5, kde=True, label='Men', color='teal')
+plt.title("Average Life Expectancy for Men and Women")
+plt.xlabel("Life Expectancy (Years)")
+plt.ylabel("Frequency")
+plt.legend()
+plt.show()
